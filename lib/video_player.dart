@@ -46,6 +46,7 @@ class VideoPlayerValue {
     this.buffered = const <DurationRange>[],
     this.isInitialized = false,
     this.isPlaying = false,
+    this.isLoopPlaybackEnd = false,
     this.isLooping = false,
     this.isBuffering = false,
     this.volume = 1.0,
@@ -93,7 +94,8 @@ class VideoPlayerValue {
 
   /// True if the video is playing. False if it's paused.
   final bool isPlaying;
-
+  
+  final bool isLoopPlaybackEnd;
   /// True if the video is looping.
   final bool isLooping;
 
@@ -152,6 +154,7 @@ class VideoPlayerValue {
     List<DurationRange>? buffered,
     bool? isInitialized,
     bool? isPlaying,
+    bool? isLoopPlaybackEnd,
     bool? isLooping,
     bool? isBuffering,
     double? volume,
@@ -168,6 +171,7 @@ class VideoPlayerValue {
       buffered: buffered ?? this.buffered,
       isInitialized: isInitialized ?? this.isInitialized,
       isPlaying: isPlaying ?? this.isPlaying,
+      isLoopPlaybackEnd: isLoopPlaybackEnd ?? this.isLoopPlaybackEnd,
       isLooping: isLooping ?? this.isLooping,
       isBuffering: isBuffering ?? this.isBuffering,
       volume: volume ?? this.volume,
@@ -190,6 +194,7 @@ class VideoPlayerValue {
         'buffered: [${buffered.join(', ')}], '
         'isInitialized: $isInitialized, '
         'isPlaying: $isPlaying, '
+        'isLoopPlaybackEnd: $isLoopPlaybackEnd, '
         'isLooping: $isLooping, '
         'isBuffering: $isBuffering, '
         'volume: $volume, '
@@ -208,6 +213,7 @@ class VideoPlayerValue {
           captionOffset == other.captionOffset &&
           listEquals(buffered, other.buffered) &&
           isPlaying == other.isPlaying &&
+          isLoopPlaybackEnd == other.isLoopPlaybackEnd &&
           isLooping == other.isLooping &&
           isBuffering == other.isBuffering &&
           volume == other.volume &&
@@ -226,6 +232,7 @@ class VideoPlayerValue {
         buffered,
         isPlaying,
         isLooping,
+        isLoopPlaybackEnd,
         isBuffering,
         volume,
         playbackSpeed,
@@ -465,6 +472,9 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
           break;
         case VideoEventType.isPlayingStateUpdate:
           value = value.copyWith(isPlaying: event.isPlaying);
+          break;
+        case VideoEventType.loopPlaybackEnd:
+          value = value.copyWith(isLoopPlaybackEnd: event.isLoopPlaybackEnd);
           break;
         case VideoEventType.unknown:
           break;
